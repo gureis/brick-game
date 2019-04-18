@@ -1,7 +1,7 @@
 const player = {
     gameover: true
 }
-
+let totalBricks = 30;
 const container = document.querySelector('.container');
 let contDim = container.getBoundingClientRect();
 
@@ -84,8 +84,8 @@ function startGame() {
         player.score = 0;
         player.lives = 3;
         ball.style.display = 'block';
-        // setUpBricks();
-        updateScore();
+        setupBricks(totalBricks);
+        updateScoreAndLives();
         window.requestAnimationFrame(update);
     }
 }
@@ -103,17 +103,53 @@ function update() {
     window.requestAnimationFrame(update);
 }
 
-function updateScore() {
+function setupBricks(bricks) {
+    const defaultX = ((contDim.width % 120) / 2);
+    let row = {
+        x: defaultX,
+        y: (contDim.top + 10)
+    }
+    let skip = false;
+    for(let i = 0; i < bricks; i++) {
+        if(row.x > (contDim.width - 120)) {
+            row.y += 70;
+            if(row.y > (contDim.height/2))
+                skip = true;
+            row.x = defaultX;
+        }
+        row.num = i;
+        if(!skip)
+            createBrick(row);
+        row.x += 120;
+    }
+}
+
+function createBrick(pos) {
+    const div = document.createElement('div');
+    div.setAttribute('class', 'brick');
+    div.style.backgroundColor = randomColor();
+    div.textContent = pos.num + 1;
+    div.style.left = pos.x + 'px';
+    div.style.top = pos.y + 'px';
+    container.appendChild(div);
+}
+
+function randomColor() {
+    return '#' + Math.random().toString(16).substr(-6);
+}
+
+function updateScoreAndLives() {
     document.querySelector('.score').textContent = player.score;
     document.querySelector('.lives').textContent = player.lives;
 }
+
 // var start = null;
 
 // function step(timestamp) {
 //     if (!start) start = timestamp;
 //     var progress = timestamp - start;
 //     container.style.left = Math.min(progress / 10, 200) + "px";
-//     if (progress < 2200) {
+//     if (progress < 3200) {
 //         console.log(start);
 //         window.requestAnimationFrame(step);
 //     }
