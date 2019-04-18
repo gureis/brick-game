@@ -81,6 +81,11 @@ function startGame() {
     if(player.gameover) {
         player.gameover = false;
         gameover.style.display = 'none';
+        player.score = 0;
+        player.lives = 3;
+        ball.style.display = 'block';
+        // setUpBricks();
+        updateScore();
         window.requestAnimationFrame(update);
     }
 }
@@ -96,6 +101,11 @@ function update() {
             currentPaddlePos += 10;
     paddle.style.left = currentPaddlePos + 'px';
     window.requestAnimationFrame(update);
+}
+
+function updateScore() {
+    document.querySelector('.score').textContent = player.score;
+    document.querySelector('.lives').textContent = player.lives;
 }
 // var start = null;
 
