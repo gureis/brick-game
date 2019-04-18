@@ -1,6 +1,7 @@
 .container {
+    position: absolute; 
     height: 700px;
-    width: 1535px;;
+    width: 80vw;
     margin: 0 auto;
     border: 1px solid black;
     background-color: gainsboro;

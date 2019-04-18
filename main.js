@@ -8,7 +8,7 @@ gameover.style.color = "white";
 gameover.style.lineHeight = "300px";
 gameover.style.fontSize = "3rem";
 gameover.style.textTransform = "uppercase";
-gameover.style.width = "1535px";
+gameover.style.width = "80vw";
 gameover.style.backgroundColor = "red";
 gameover.style.textAlign = "center";
 gameover.addEventListener('click', startGame);
@@ -23,10 +23,9 @@ ball.style.backgroundColor = "gainsboro";
 ball.style.borderRadius = "25px";
 ball.style.backgroundImage = "url(Smash_Ball.png)";
 ball.style.backgroundSize = "20px 20px";
-ball.style.top = "700px";
+ball.style.top = "645px";
 ball.style.display = "none";
-ball.style.left = "49%";
-
+ball.style.left = "49.6%";
 container.appendChild(ball);
 
 const paddle = document.createElement('div');
@@ -35,24 +34,63 @@ paddle.style.backgroundColor = "white";
 paddle.style.width = "120px";
 paddle.style.height = "13px";
 paddle.style.borderRadius = "25px";
-paddle.style.bottom = "235px";
-paddle.style.left = "900px";
-
+paddle.style.bottom = "20px";
+paddle.style.left = "46.5%";
 container.appendChild(paddle);
 
-function startGame() {
-    console.log('Tops');
-}
-
-let start = null;
-
-function step(timestamp) {
-    if (!start) start = timestamp;
-    var progress = timestamp - start;
-    container.style.left = Math.min(progress / 10, 200) + "px";
-    if (progress < 5000) {
-        window.requestAnimationFrame(step);
+document.addEventListener('keydown',  function (e) {
+    // console.log(e.key);
+    // console.log(e.keyCode);
+    if(e.key !== undefined) {
+        if(e.key === 'a' || e.key === 'ArrowLeft') 
+            paddle.left = true;
+        if(e.key === 'd' || e.key === 'ArrowRight')
+            paddle.right = true;
+    } else if(e.keyCode !== undefined) {
+        if(e.keyCode === '65' || e.key === '37')
+            paddle.left = true;
+        if(e.keyCode === '68' || e.key === '39')
+            paddle.right = true;
     }
+})
+
+document.addEventListener('keyup', function (e) {
+    if (e.key !== undefined) {
+        if (e.key === 'a' || e.key === 'ArrowLeft')
+            paddle.left = false;
+        if (e.key === 'd' || e.key === 'ArrowRight')
+            paddle.right = false;
+    } else if (e.keyCode !== undefined) {
+        if (e.keyCode === '65' || e.key === '37')
+            paddle.left = false;
+        if (e.keyCode === '68' || e.key === '39')
+            paddle.right = false;
+    }
+})
+
+function startGame() {
+    console.log('Game Started');
+    window.requestAnimationFrame(update);
 }
 
-window.requestAnimationFrame(step);
+function update() {
+    let currentPaddlePos = paddle.offsetLeft;
+    if(paddle.left) {
+        currentPaddlePos -= 10;
+    }
+    if(paddle.right)
+        currentPaddlePos += 10;
+    paddle.style.left = currentPaddlePos + 'px';
+    window.requestAnimationFrame(update);
+}
+// var start = null;
+
+// function step(timestamp) {
+//     if (!start) start = timestamp;
+//     var progress = timestamp - start;
+//     container.style.left = Math.min(progress / 10, 200) + "px";
+//     if (progress < 2200) {
+//         console.log(start);
+//         window.requestAnimationFrame(step);
+//     }
+// }
