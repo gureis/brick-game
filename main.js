@@ -1,3 +1,7 @@
+const player = {
+    gameover: true
+}
+
 const container = document.querySelector('.container');
 let contDim = container.getBoundingClientRect();
 
@@ -68,18 +72,28 @@ document.addEventListener('keyup', function (e) {
     }
 })
 
+window.onresize = function (event) {
+    contDim = container.getBoundingClientRect();
+}
+
 function startGame() {
     console.log('Game Started');
-    window.requestAnimationFrame(update);
+    if(player.gameover) {
+        player.gameover = false;
+        gameover.style.display = 'none';
+        window.requestAnimationFrame(update);
+    }
 }
 
 function update() {
     let currentPaddlePos = paddle.offsetLeft;
     if(paddle.left) {
-        currentPaddlePos -= 10;
+        if(currentPaddlePos >= contDim.left)
+            currentPaddlePos -= 10;
     }
     if(paddle.right)
-        currentPaddlePos += 10;
+        if(currentPaddlePos <= (contDim.right - paddle.offsetWidth - 20))
+            currentPaddlePos += 10;
     paddle.style.left = currentPaddlePos + 'px';
     window.requestAnimationFrame(update);
 }
