@@ -2,10 +2,10 @@
     position: absolute; 
     height: 700px;
     width: 80vw;
-    margin: 0 auto;
+    margin: 0 10%;
     border: 1px solid black;
     background-color: gainsboro;
-    left: 10%;
+    
 }
 
 .center-horizontal {

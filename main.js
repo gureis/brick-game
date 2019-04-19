@@ -93,11 +93,11 @@ function startGame() {
 function update() {
     let currentPaddlePos = paddle.offsetLeft;
     if(paddle.left) {
-        if(currentPaddlePos >= contDim.left)
+        if(currentPaddlePos >= (7))
             currentPaddlePos -= 10;
     }
     if(paddle.right)
-        if(currentPaddlePos <= (contDim.right - paddle.offsetWidth - 20))
+        if(currentPaddlePos <= (contDim.width - paddle.offsetWidth - 10))
             currentPaddlePos += 10;
     paddle.style.left = currentPaddlePos + 'px';
     window.requestAnimationFrame(update);
