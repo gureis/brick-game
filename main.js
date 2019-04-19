@@ -30,6 +30,7 @@ ball.style.backgroundSize = "20px 20px";
 ball.style.top = "645px";
 ball.style.display = "none";
 ball.style.left = "49.6%";
+ball.style.animation = "spin 4s linear infinite";
 container.appendChild(ball);
 
 const paddle = document.createElement('div');
@@ -84,6 +85,7 @@ function startGame() {
         player.score = 0;
         player.lives = 3;
         ball.style.display = 'block';
+        player.ballDir = [5, 5];
         setupBricks(totalBricks);
         updateScoreAndLives();
         window.requestAnimationFrame(update);
@@ -100,6 +102,7 @@ function update() {
         if(currentPaddlePos <= (contDim.width - paddle.offsetWidth - 10))
             currentPaddlePos += 10;
     paddle.style.left = currentPaddlePos + 'px';
+    moveBall();
     window.requestAnimationFrame(update);
 }
 
@@ -134,6 +137,13 @@ function createBrick(pos) {
     container.appendChild(div);
 }
 
+function isCollide(a, b) {
+    let aRect = a.getBoundingClientRect();
+    let bRect = b.getBoundingClientRect();
+    console.log(aRect);
+    console.log(bRect);
+}
+
 function randomColor() {
     return '#' + Math.random().toString(16).substr(-6);
 }
@@ -141,6 +151,24 @@ function randomColor() {
 function updateScoreAndLives() {
     document.querySelector('.score').textContent = player.score;
     document.querySelector('.lives').textContent = player.lives;
+}
+
+function moveBall() {
+    let ballPos = {
+        x: ball.offsetLeft,
+        y: ball.offsetTop
+    }
+    if(ballPos.y > (contDim.height - 20) || ballPos.y < 0) {
+        player.ballDir[1] *= -1;
+    }
+    if(ballPos.x > (contDim.width - 20) || ballPos.x < 0) {
+        player.ballDir[0] *= -1;
+    }
+    isCollide(paddle, ball);
+    ballPos.x += player.ballDir[0];
+    ballPos.y += player.ballDir[1];
+    ball.style.top = ballPos.y + 'px';
+    ball.style.left = ballPos.x + 'px';
 }
 
 // var start = null;
