@@ -1,5 +1,6 @@
 const player = {
-    gameover: true
+    gameover: true,
+    highScore: 0
 }
 let totalBricks = 30;
 const container = document.querySelector('.container');
@@ -83,9 +84,11 @@ function startGame() {
         player.gameover = false;
         gameover.style.display = 'none';
         player.score = 0;
-        player.lives = 3;
+        player.lives = 1;
         ball.style.display = 'block';
-        player.ballDir = [10, 5];
+        ball.style.top = paddle.offsetTop - 30 + "px";
+        ball.style.left = paddle.offsetLeft + 50 + "px";
+        player.ballDir = [10, -5];
         setupBricks(totalBricks);
         updateScoreAndLives();
         window.requestAnimationFrame(update);
@@ -93,17 +96,19 @@ function startGame() {
 }
 
 function update() {
-    let currentPaddlePos = paddle.offsetLeft;
-    if(paddle.left) {
-        if(currentPaddlePos >= (7))
-            currentPaddlePos -= 10;
+    if(!player.gameover) {
+        let currentPaddlePos = paddle.offsetLeft;
+        if(paddle.left) {
+            if(currentPaddlePos >= (7))
+                currentPaddlePos -= 10;
+        }
+        if(paddle.right)
+            if(currentPaddlePos <= (contDim.width - paddle.offsetWidth - 10))
+                currentPaddlePos += 10;
+        paddle.style.left = currentPaddlePos + 'px';
+        moveBall();
+        window.requestAnimationFrame(update);
     }
-    if(paddle.right)
-        if(currentPaddlePos <= (contDim.width - paddle.offsetWidth - 10))
-            currentPaddlePos += 10;
-    paddle.style.left = currentPaddlePos + 'px';
-    moveBall();
-    window.requestAnimationFrame(update);
 }
 
 function setupBricks(bricks) {
@@ -151,6 +156,36 @@ function randomColor() {
 function updateScoreAndLives() {
     document.querySelector('.score').textContent = player.score;
     document.querySelector('.lives').textContent = player.lives;
+    if (player.score > player.highScore) {
+        player.highScore = player.score;
+    }
+    document.querySelector('.high-score').textContent = player.highScore
+}
+
+function endGame() {
+    gameover.style.display = 'block';
+    gameover.innerHTML = 'Game Over <br> Your Score: ' + player.score;
+    player.gameover = true;
+    let tempBricks = document.querySelectorAll('.brick');
+    ball.style.display = "none";
+    for(let brick of tempBricks) {
+        brick.parentNode.removeChild(brick);
+    }
+    totalBricks = 30;
+}
+
+function stopper() {
+    
+}
+
+function fallOff() {
+    player.lives--;
+    if(player.lives < 1) {
+        endGame();
+        player.lives = 0;
+    }
+    updateScoreAndLives();
+    stopper();
 }
 
 function moveBall() {
@@ -159,6 +194,11 @@ function moveBall() {
         y: ball.offsetTop
     }
     if(ballPos.y > (contDim.height - 20) || ballPos.y < 0) {
+        if(ballPos.y > (contDim.height - 20)) {
+            fallOff();
+        } else {
+
+        }
         player.ballDir[1] *= -1;
     }
     if(ballPos.x > (contDim.width - 20) || ballPos.x < 0) {
@@ -176,6 +216,7 @@ function moveBall() {
             brick.parentNode.removeChild(brick);
             player.score ++;
             updateScoreAndLives();
+            totalBricks--;
         }
     }
     ballPos.x += player.ballDir[0];

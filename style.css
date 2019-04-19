@@ -12,7 +12,7 @@
     text-align: center;
 }
 
-.score, .lives {
+.score, .lives, .high-score {
     font-size: 2.5rem;
 }
 
