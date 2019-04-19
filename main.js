@@ -27,7 +27,7 @@ ball.style.backgroundColor = "gainsboro";
 ball.style.borderRadius = "25px";
 ball.style.backgroundImage = "url(Smash_Ball.png)";
 ball.style.backgroundSize = "20px 20px";
-ball.style.top = "645px";
+ball.style.top = "640px";
 ball.style.display = "none";
 ball.style.left = "49.6%";
 ball.style.animation = "spin 4s linear infinite";
@@ -85,7 +85,7 @@ function startGame() {
         player.score = 0;
         player.lives = 3;
         ball.style.display = 'block';
-        player.ballDir = [5, 5];
+        player.ballDir = [10, 5];
         setupBricks(totalBricks);
         updateScoreAndLives();
         window.requestAnimationFrame(update);
@@ -137,12 +137,12 @@ function createBrick(pos) {
     container.appendChild(div);
 }
 
-function isCollide(a, b) {
+function isCollide(a, ball) {
     let aRect = a.getBoundingClientRect();
-    let bRect = b.getBoundingClientRect();
-    console.log(aRect);
-    console.log(bRect);
-}
+    let bRect = ball.getBoundingClientRect();
+    return !((aRect.right < bRect.left) || (aRect.left > bRect.right))
+            && !((aRect.botom < bRect.top) || (aRect.top > bRect.bottom));
+    }
 
 function randomColor() {
     return '#' + Math.random().toString(16).substr(-6);
@@ -164,7 +164,11 @@ function moveBall() {
     if(ballPos.x > (contDim.width - 20) || ballPos.x < 0) {
         player.ballDir[0] *= -1;
     }
-    isCollide(paddle, ball);
+    if (isCollide(paddle, ball)) {
+        console.log(((ballPos.x - paddle.offsetLeft) - (paddle.offsetWidth / 2)) / 10);
+        player.ballDir[0] = ((ballPos.x - paddle.offsetLeft) - (paddle.offsetWidth/2))/10;
+        player.ballDir[1] *= -1;
+    }
     ballPos.x += player.ballDir[0];
     ballPos.y += player.ballDir[1];
     ball.style.top = ballPos.y + 'px';
