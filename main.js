@@ -140,8 +140,8 @@ function createBrick(pos) {
 function isCollide(a, ball) {
     let aRect = a.getBoundingClientRect();
     let bRect = ball.getBoundingClientRect();
-    return !((aRect.right < bRect.left) || (aRect.left > bRect.right))
-            && !((aRect.botom < bRect.top) || (aRect.top > bRect.bottom));
+    return !((aRect.right < bRect.left) || (aRect.left > bRect.right) 
+            || (aRect.bottom < bRect.top) || (aRect.top > bRect.bottom));
     }
 
 function randomColor() {
@@ -168,6 +168,15 @@ function moveBall() {
         console.log(((ballPos.x - paddle.offsetLeft) - (paddle.offsetWidth / 2)) / 10);
         player.ballDir[0] = ((ballPos.x - paddle.offsetLeft) - (paddle.offsetWidth/2))/10;
         player.ballDir[1] *= -1;
+    }
+    let bricks = document.querySelectorAll('.brick');
+    for (let brick of bricks) {
+        if(isCollide(brick, ball)) {
+            player.ballDir[1] *= -1;
+            brick.parentNode.removeChild(brick);
+            player.score ++;
+            updateScoreAndLives();
+        }
     }
     ballPos.x += player.ballDir[0];
     ballPos.y += player.ballDir[1];
